@@ -1,7 +1,7 @@
 package edu.cg.models.Locomotive;
 
 /**
- * TODO(2) : Read the instructions below for further information.
+ * Done(2) : Read the instructions below for further information.
  * This class contains constants that could be used when building our 3D Model.
  * BASE_UNIT is our unit measure and it represents a square in the provided sketch (see assignment instructions).
  */
@@ -39,5 +39,20 @@ public final class Specification {
     public static final double ROOF_DEPTH = BACK_BODY_DEPTH - 2 * EPS;
     public static final double ROOF_HEIGHT = 0.6 * BASE_UNIT;
     public static final double ROOF_WIDTH = BACK_BODY_WIDTH;
+
+    // SmallWindow:
+    public static final double SMALL_WINDOW_DEPTH = EPS;
+    public static final double SMALL_WINDOW_HIGHT = 2 * BASE_UNIT;
+    public static final double SMALL_WINDOW_WIDTH = 1.5 * BASE_UNIT;
+
+    // BigWindow:
+    public static final double BIG_WINDOW_DEPTH = EPS;
+    public static final double BIG_WINDOW_HIGHT = 2 * BASE_UNIT;
+    public static final double BIG_WINDOW_WIDTH = 3 * BASE_UNIT;
+
+    // Door:
+    public static final double DOOR_DEPTH = EPS;
+    public static final double DOOR_HIGHT = 3.5 * BASE_UNIT;
+    public static final double DOOR_WINDOW_WIDTH = 1.5 * BASE_UNIT;
 
 }

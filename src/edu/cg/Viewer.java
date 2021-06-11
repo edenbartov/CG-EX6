@@ -4,6 +4,10 @@ import edu.cg.algebra.Vec;
 import edu.cg.models.Locomotive.Locomotive;
 import edu.cg.models.Track.Track;
 import edu.cg.models.Track.TrackSegment;
+import edu.cg.util.glu.GLU;
+import edu.cg.util.glu.Project;
+
+import static edu.cg.util.glu.Project.gluPerspective;
 import static org.lwjgl.opengl.GL21.*;
 
 /**
@@ -21,16 +25,25 @@ public class Viewer {
     private boolean isBirdseyeView = false; // Indicates whether the camera's perspective corresponds to the vehicle's
 
     // TODO: Set the initial position of the vehicle in the scene by assigning a value to carInitialPosition.
-    private final double[] carInitialPosition = null;
+    private final double[] carInitialPosition = {0,0,0};
 
     // TODO: set the car scale as you wish - we uniformly scale the car by 3.0.
+
 
     // TODO: You can add additional fields to assist your implementation, for example:
     // - Camera initial position for standard 3rd person mode(should be fixed)
     // - Camera initial position for birdseye view)
     // - Light colors
     // Or in short anything reusable - this make it easier for your to keep track of your implementation.
-
+    private float eyex = 0f;
+    private float eyey = 0f;
+    private float eyez = 2f;
+    private float centerx = 0f;
+    private float centery = 0f;
+    private float centerz = 0f;
+    private float upx = 0f;
+    private float upy = 0f;
+    private float upz = 1f;
 
 
     public Viewer(int width, int height) {
@@ -47,15 +60,17 @@ public class Viewer {
             initModel();
         // TODO : Define background color for the scene in day mode and in night.
         if (this.isDayMode) {
-            // TODO: Setup background when day mode is on
+            // Done: Setup background when day mode is on
             // use gl.glClearColor() function.
+            glClearColor(0f, 0f, 25f / 255f,100f/255f);
         } else {
-            // TODO: Setup background when night mode is on.
+            // Done: Setup background when night mode is on.
+            glClearColor(0f, 215f/255f, 1f,100f/255f);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        // TODO: Read this part of the code, understand the flow that goes into rendering the scene.
+        // Done: Read this part of the code, understand the flow that goes into rendering the scene.
         // Step (1) Update the accumulated translation that needs to be
         // applied on the car, camera and light sources.
         updateCarCameraTranslation();
@@ -112,12 +127,25 @@ public class Viewer {
             // TODO Setup camera for the Birds-eye view (You need to configure the viewing transformation accordingly).
         } else {
             // TODO Setup camera for standard 3rd person view.
+            GLU glu = new GLU();
+            glu.gluLookAt(eyex,eyey,eyez,centerx,centery,centerz,upx,upy,upz);
         }
+    }
+    private void setupDay(int light) {
+        float[] sunColor = new float[]{1.0F, 1.0F, 1.0F, 1.0F};
+        Vec dir = (new Vec(0.0D, 1.0D, 1.0D)).normalize();
+        float[] pos = new float[]{dir.x, dir.y, dir.z, 0.0F};
+        glLightfv(light, 4610, sunColor);
+        glLightfv(light, 4609, sunColor);
+        glLightfv(light, 4611, pos);
+        glLightfv(light, 4608, new float[]{0.1F, 0.1F, 0.1F, 1.0F});
+        glEnable(light);
     }
 
     private void setupLights() {
         if (this.isDayMode) {
             // TODO Setup day lighting.
+            this.setupDay(16384);
             // * Remember: switch-off any light sources that were used in night mode and are not use in day mode.
 
         } else {
@@ -144,6 +172,13 @@ public class Viewer {
         // * You should set up the car lights right before you render the locomotive after the appropriate transformations
         // * have been applied. This ensures that the light sources are fixed to the locomotive (ofcourse all of this
         // * is only relevant to rendering the vehicle in night mode).
+        double carRotation = this.gameState.getCarRotation();
+        glPushMatrix();
+        glTranslated(this.carInitialPosition[0] + (double)this.carCameraTranslation.x, this.carInitialPosition[1] + (double)this.carCameraTranslation.y, this.carInitialPosition[2] + (double)this.carCameraTranslation.z);
+        glRotated(180.0D - carRotation, 0.0D, 1.0D, 0.0D);
+        glScaled(3.0D, 3.0D, 3.0D);
+        this.car.render();
+        glPopMatrix();
     }
 
     public GameState getGameState() {
@@ -173,11 +208,15 @@ public class Viewer {
         canvasHeight = height;
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
+        float aspect = (float)width / (float)height;
         if (this.isBirdseyeView) {
             // TODO : Set a projection matrix for birdseye view mode.
         } else {
             // TODO : Set a projection matrix for third person mode.
+            float fovy = 120.0f;
+            gluPerspective(fovy, aspect, .1f,1000.0f);
         }
+
     }
 
     public void toggleNightMode() {

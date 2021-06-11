@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL21.*;
 
 /***
  * A 3D CarLight renderer. The locomotive light is oriented such that it is parallel to the XY plane.
- * TODO(4) : read this code and understand how do we render the locomotive light.
+ * DONE(4) : read this code and understand how do we render the locomotive light.
  */
 public class CarLight implements IRenderable {
     @Override

@@ -1,8 +1,10 @@
 package edu.cg.models.Locomotive;
 
 import edu.cg.models.IRenderable;
+import edu.cg.util.glu.Cylinder;
 import edu.cg.util.glu.Disk;
 
+import static org.lwjgl.opengl.GL11.glTranslated;
 import static org.lwjgl.opengl.GL21.*;
 
 /***
@@ -13,7 +15,17 @@ public class Wheel implements IRenderable {
     @Override
     public void render() {
         glPushMatrix();
-        // TODO(3) : Copy your code from HW5.
+        // DONE(3) : Render the wheel using a Cylinder, and disks that about the cylinder.
+        glRotated(90, 0, 1, 0);
+        Materials.setMaterialWheelTire();
+        glTranslated(0., 0., -Specification.WHEEL_WIDTH/2);
+        new Cylinder().draw((float) Specification.WHEEL_RADIUS,
+                (float) Specification.WHEEL_RADIUS,
+                (float) Specification.WHEEL_WIDTH, 20,1);
+        drawRims();
+        glTranslated(0., 0., Specification.WHEEL_WIDTH);
+        glRotated(180, 1, 0, 0);
+        drawRims();
         glPopMatrix();
 
     }
@@ -30,5 +42,6 @@ public class Wheel implements IRenderable {
 
     @Override
     public void init() {
+        // HW6 Related
     }
 }
